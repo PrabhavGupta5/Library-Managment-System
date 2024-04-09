@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Include common header -->
+    <div th:replace="~{fragments :: head}"></div>
+
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <script>
+        function borrowBook(bookId) {
+            fetch('/borrow', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'bookId=' + encodeURIComponent(bookId),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(responseText => {
+                console.log('Book borrowed successfully');
+            })
+            .catch(error => {
+                console.error('Error borrowing book:', error);
+            });
+        }
+    </script>
+</head>
+
+<body>
+<div th:replace="~{fragments :: header}"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h2>Book List</h2>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div th:if="${param.error}" class="error-msg">
+                <i class="fa fa-times-circle"></i>
+               <div class="alert alert-danger" th:text="${param.error}">
+               </div>
+            </div>
+            <div th:if="${param.message}" class="success-msg">
+                <i class="fa fa-check"></i>
+                <div class="alert alert-success" th:text="${param.message}">
+               </div>
+            </div>
+            <form th:action="@{/search}" method="get">
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+<!--                        <label for="searchTerm">Search</label>-->
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Enter book name or author name">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div th:replace="~{fragments :: book-list}"></div>
+
+
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+
+
+</body>
+
+
+</html>
